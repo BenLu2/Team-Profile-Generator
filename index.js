@@ -5,77 +5,95 @@ const Employee = require('./classes/employee')
 const Engineer = require('./classes/engineer')
 const Intern = require('./classes/intern')
 const Manager = require('./classes/manager')
-// const { template } = require('lodash')
+const path = require('path'); 
+const { template } = require('lodash')
 // console.log(generateHtml(team))
 
 const team = [];
 
 const addManager = () => {
 
-return inquirer.prompt(
+ inquirer.prompt(
     [
         {
-            name: "name",
             type: 'input',
             message: "What is the manager name?",
-            validate: (response) => {
-                if (!response) {
-                    return console.log('manager name is required.')
-                } else {
-                    return true
-                }
-            }
-
+            name: "name"
+           
+            // validate: (response) => {
+            //     if (!response) {
+            //         return console.log('manager name is required.')
+            //     } else {
+            //         return true
+            //     }
+            // }
         },
+        
         {
             name: "id",
             type: 'input',
-            message: "What is this manager's id?",
-            validate: (response) => {
-                if (!response) {
-                    return console.log('manager id is required.')
-                } else {
-                    return true
-                }
-            }
+            message: "What is this manager's id?"
+            // validate: (response) => {
+            //     if (!response) {
+            //         return console.log('manager id is required.')
+            //     } else {
+            //         return true
+            //     }
+            // }
 
         },
         {
             name: "email",
             type: 'input',
             message: "What is the manager's email?",
-            validate: (response) => {
-                if (!response) {
-                    return console.log('manager email is required.')
-                } else {
-                    return true
-                }
+            // validate: (response) => {
+            //     if (!response) {
+            //         return console.log('manager email is required.')
+            //     } else {
+            //         return true
+            //     }
 
-            },
+            // },
         },
         {
             name: "officeNumber",
             type: 'input',
             message: "What is manager's office number?",
-            validate: (response) => {
-                if (!response) {
-                    return console.log('office number is required.')
-                } else {
-                    return true
-                }
+            // validate: (response) => {
+            //     if (!response) {
+            //         return console.log('office number is required.')
+            //     } else {
+            //         return true
+            //     }
 
-            },
+            // },
 
+        },
+        {
+            type: 'list',
+            message: 'What type of member would you like to add?',
+            name: 'addAnother',
+            choices: ['Engineer', 'Intern']
         }
     ]
 ).then(managerInput => {
-    const  { name, id, email, officeNumber } = managerInput; 
-    const manager = new Manager (name, id, email, officeNumber);
+    const manager = new Manager(managerInput.name, managerInput.id, managerInput.email, managerInput.officeNumber)
+    team.push(manager)
+    console.log(team)
 
-    teamArray.push(manager); 
-    console.log(manager); 
+    switch (managerInput.addAnother) {
+        case 'Engineer':
+            addEmployee();
+            break;
+        case 'Intern':
+            addEmployee();
+            break;
+        default:
+            generateHtml(team); 
+            break; 
+    }
 })
-};
+}
 
 const addEmployee = () => {
     return inquirer.prompt(
@@ -168,7 +186,7 @@ const addEmployee = () => {
         ]
     ).then(employeeQ => {
         let { name, id, email, role, github, school, addAnother } = employeeQ; 
-        let employee; 
+        const employee = new Employee (name, id, email);
 
         if (role === "Engineer") {
             employee = new Engineer (name, id, email, github);
@@ -181,7 +199,7 @@ const addEmployee = () => {
             console.log(employee);
         }
 
-        teamArray.push(employee); 
+        team.push(employee); 
 
         if (addAnother) {
             return addEmployee(team); 
