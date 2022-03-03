@@ -191,3 +191,28 @@ const addEmployee = () => {
     })
 };
 
+// generate HTML page file
+const writeFile = data => {
+    fs.writeFile('./', data, err => {
+        if (err) {
+            console.log(err);
+            return; 
+        } else {
+            console.log("Team profile has been successfully created!")
+        }
+    })
+}; 
+
+addManager()
+  .then(addEmployee)
+  .then(team => {
+    return generateHTML(team);
+  })
+  .then(HTMLpage => {
+    return writeFile(HTMLpage);
+  })
+  .catch(err => {
+ console.log(err);
+  });
+
+console.log(generateHtml(team))
