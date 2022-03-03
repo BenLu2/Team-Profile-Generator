@@ -158,10 +158,36 @@ const addEmployee = () => {
     
                 },
     
+            },
+            {
+                type: 'confirm',
+                name: 'addAnother',
+                message: 'Would you like to add another team members?',
+                default: false
             }
         ]
-    ).then(function(addAnother)
-    {
-})
+    ).then(employeeQ => {
+        let { name, id, email, role, github, school, addAnother } = employeeQ; 
+        let employee; 
 
-}
+        if (role === "Engineer") {
+            employee = new Engineer (name, id, email, github);
+
+            console.log(employee);
+
+        } else if (role === "Intern") {
+            employee = new Intern (name, id, email, school);
+
+            console.log(employee);
+        }
+
+        teamArray.push(employee); 
+
+        if (addAnother) {
+            return addEmployee(team); 
+        } else {
+            return team;
+        }
+    })
+};
+
