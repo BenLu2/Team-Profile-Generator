@@ -24,7 +24,7 @@ Once all the required information is entered, it will automatically generate an 
 git clone https://github.com/BenLu2/Team-Profile-Generator.git
 `
 
-Once installed, run `npm install` and 'node index.js' to run the application
+Once installed, run `npm install` and `node index.js` to run the application
 <!-- USAGE EXAMPLES -->
 ## Demo Video
 
