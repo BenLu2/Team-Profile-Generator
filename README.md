@@ -3,10 +3,10 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This is a simple team profile generator that helps manager to manage their team
-As a manager, you can add team member profile use the command line
-You can choose to add Engineer or Intern
-Once all the required information is entered, it will automatically generate an HTML page that shows all the profile you just added
+This is a simple team profile generator that helps manager to manage their team </br>
+As a manager, you can add team member profile use the command line </br>
+You can choose to add Engineer or Intern </br>
+Once all the required information is entered, it will automatically generate an HTML page that shows all the profile you just added </br>
 
 
 
