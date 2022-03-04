@@ -6,10 +6,15 @@ const Engineer = require('./classes/engineer')
 const Intern = require('./classes/intern')
 const Manager = require('./classes/manager')
 const path = require('path'); 
-const { template } = require('lodash')
+// const { template } = require('lodash')
 // console.log(generateHtml(team))
 
 const team = [];
+
+function initApp() {
+    startHtml();
+    addManager();
+}
 
 const addManager = () => {
 
@@ -30,9 +35,9 @@ const addManager = () => {
         },
         
         {
-            name: "id",
             type: 'input',
-            message: "What is this manager's id?"
+            message: "What is this manager's ID?",
+            name: 'id'
             // validate: (response) => {
             //     if (!response) {
             //         return console.log('manager id is required.')
@@ -92,11 +97,13 @@ const addManager = () => {
             generateHtml(team); 
             break; 
     }
-})
+}).catch((error) => {
+    console.log(' error', error);
+  });
 }
 
 const addEmployee = () => {
-    return inquirer.prompt(
+     inquirer.prompt(
         [
             {
                 name: "name",
@@ -186,7 +193,7 @@ const addEmployee = () => {
         ]
     ).then(employeeQ => {
         let { name, id, email, role, github, school, addAnother } = employeeQ; 
-        const employee = new Employee (name, id, email);
+        let employee;
 
         if (role === "Engineer") {
             employee = new Engineer (name, id, email, github);
@@ -200,37 +207,108 @@ const addEmployee = () => {
         }
 
         team.push(employee); 
+        addHtml(employee)
 
         if (addAnother) {
             return addEmployee(team); 
         } else {
-            return team;
+            
+            finishHtml(team);
         }
     })
 };
 
-// generate HTML page file
-const writeFile = data => {
-    fs.writeFile('./', data, err => {
+function startHtml() {
+    const html = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>Team Profile</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark mb-5">
+            <span class="navbar-brand mb-0 h1 w-100 text-center">Team Profile</span>
+        </nav>
+        <div class="container">
+            <div class="row">`;
+    fs.writeFile("./classes/test.html", html, function(err) {
         if (err) {
             console.log(err);
-            return; 
-        } else {
-            console.log("Team profile has been successfully created!")
         }
-    })
-}; 
+    });
+    console.log("start");
+}
+function addHtml(employee) {
+    return new Promise(function(resolve, reject) {
+        const name = employee.getName();
+        const role = employee.getRole();
+        const id = employee.getId();
+        const email = employee.getEmail();
+        let data = "";
+        if (role === "Engineer") {
+            const gitHub = employee.getGithub();
+            data = `<div class="col-6">
+            <div class="card mx-auto mb-3" style="width: 18rem">
+            <h5 class="card-header">${name}<br /><br />Engineer</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${id}</li>
+                <li class="list-group-item">Email Address: ${email}</li>
+                <li class="list-group-item">GitHub: ${gitHub}</li>
+            </ul>
+            </div>
+        </div>`;
+        } else if (role === "Intern") {
+            const school = employee.getSchool();
+            data = `<div class="col-6">
+            <div class="card mx-auto mb-3" style="width: 18rem">
+            <h5 class="card-header">${name}<br /><br />Intern</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${id}</li>
+                <li class="list-group-item">Email Address: ${email}</li>
+                <li class="list-group-item">School: ${school}</li>
+            </ul>
+            </div>
+        </div>`;
+        } else {
+            const officePhone = employee.getOfficeNumber();
+            data = `<div class="col-6">
+            <div class="card mx-auto mb-3" style="width: 18rem">
+            <h5 class="card-header">${name}<br /><br />Manager</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${id}</li>
+                <li class="list-group-item">Email Address: ${email}</li>
+                <li class="list-group-item">Office Phone: ${officePhone}</li>
+            </ul>
+            </div>
+        </div>`
+        }
+        console.log("adding team employee");
+        fs.appendFile("./classes/test.html", data, function (err) {
+            if (err) {
+                return reject(err);
+            };
+            return resolve();
+        });
+    });
+}
 
-addManager()
-  .then(addEmployee)
-  .then(team => {
-    return generateHTML(team);
-  })
-  .then(HTMLpage => {
-    return writeFile(HTMLpage);
-  })
-  .catch(err => {
- console.log(err);
-  });
+function finishHtml() {
+    const html = ` </div>
+    </div>
+    
+</body>
+</html>`;
 
-console.log(generateHtml(team))
+    fs.appendFile("./classes/test.html", html, function (err) {
+        if (err) {
+            console.log(err);
+        };
+    });
+    console.log("end");
+}
+
+
+initApp();
